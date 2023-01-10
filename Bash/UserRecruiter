@@ -1,0 +1,60 @@
+#!/bin/bash
+
+if [ "$(id -u)" != "0" ]; then
+   echo "This script must be run as root" 1>&2
+   exit 1
+fi
+
+while getopts "u:p:d:" option; do
+	case $option in
+		u)
+			echo "-u $OPTARG" >&2
+			USR=${OPTARG}
+			;;
+		p)
+			echo "-p $OPTARG" >&2
+			PASS=${OPTARG}
+			;;
+		d)
+			echo "-d $OPTARG" >&2
+			DOM=${OPTARG}
+			;;
+	esac
+done
+
+if [ -z ${USR} ]; then
+   echo "User argument (-u) not set" 1>&2
+   exit 1
+fi
+
+if [ -z ${PASS} ]; then
+	echo "Password argument (-p) not set"
+else
+	if [ -z ${DOM} ]; then
+		echo "Domain argument (-d) not set"
+	else
+		echo "useradd -s /bin/bash -m $USR -p $(echo $PASS | openssl passwd -1 -stdin)"
+		useradd -m $USR -s /bin/bash -p $(echo $PASS | openssl passwd -1 -stdin)
+		
+		echo "adduser www-data ${USR}"
+		adduser www-data $USR
+		mkdir -v -m 2775 /home/$USR/Web
+		chown -v -R $USR:$USR /home/$USR/Web
+		
+		echo "Tworzenie pliku ${USR}.${HOSTNAME}.${DOM}.conf subdomeny ${USR}.${HOSTNAME}.${DOM}"
+		echo "<VirtualHost *:80>
+	ServerAdmin $USR@$HOSTNAME.$DOM
+	ServerName $USR.$HOSTNAME.$DOM
+	ServerAlias www.$USR.$HOSTNAME.$DOM
+	DocumentRoot /home/$USR/Web
+	ErrorLog \${APACHE_LOG_DIR}/error.log
+	CustomLog \${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>" > /etc/apache2/sites-available/$USR.$HOSTNAME.$DOM.conf
+
+		echo "Aktywacja subdomeny ${USR}.${HOSTNAME}.${DOM} z pliku ${USR}.${HOSTNAME}.${DOM}.conf"
+		a2ensite $USR.$HOSTNAME.$DOM.conf
+		
+		echo "Przeładowanie konfiguracji serwera WWW, aby aktywować subdomenę ${USR}.${HOSTNAME}.${DOM} z pliku ${USR}.${HOSTNAME}.${DOM}.conf"
+		service apache2 reload
+	fi
+fi

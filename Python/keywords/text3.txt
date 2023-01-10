@@ -1,0 +1,2 @@
+When it comes to evaluating the performance of keyword extractors, you can use some of the standard metrics in machine learning: accuracy, precision, recall, and F1 score. However, these metrics don’t reflect partial matches. they only consider the perfect match between an extracted segment and the correct prediction for that tag.
+Fortunately, there are some other metrics capable of capturing partial matches. An example of this is ROUGE.
