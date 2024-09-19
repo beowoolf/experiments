@@ -1,0 +1,52 @@
+#!/bin/bash
+
+SZUKANY=$1
+echo $SZUKANY
+
+WKD=$2
+echo $WKD
+
+HASLO=`grep -i "^$SZUKANY:" /etc/shadow | awk -F ":" '{ print $2 }'`
+echo $HASLO
+
+DANE=`grep -i "^$SZUKANY:" /etc/passwd`
+echo $DANE
+
+IDU=`echo $DANE | awk -F ":" '{ print $3 }'`
+echo $IDU
+
+IDG=`echo $DANE | awk -F ":" '{ print $4 }'`
+echo $IDG
+
+KOMENTARZ=`echo $DANE | awk -F ":" '{ print $5 }'`
+echo $KOMENTARZ
+
+KD=`echo $DANE | awk -F ":" '{ print $6 }'`
+echo $KD
+
+POWLOKA=`echo $DANE | awk -F ":" '{ print $7 }'`
+echo $POWLOKA
+
+#HASH=`echo $HASLO | sed --expression='s/$/\$/g'`
+#HASH=`echo $HASLO | sed --expression="s/[$]/\\$/g"`
+#HASH=`echo $HASLO | sed 's/[$]/\\$/g'`
+#echo $HASH
+#echo $HASLO | sed 's/[$]/\\$/g'
+
+HASH=$(echo $HASLO | sed 's/[$]/\\$/g')
+echo $HASH
+
+grep -ri "^$SZUKANY:" /etc/passwd /etc/shadow
+
+echo ""
+
+echo "echo \"$SZUKANY:$HASH\" | chpasswd -e"
+
+#echo "groupadd -g $IDG $SZUKANY" > create_useradd_cmd_output
+#echo "useradd -s $POWLOKA -m -d $WKD/$SZUKANY --uid $IDU --gid $IDG -p \"$HASLO\" -U $SZUKANY" >> create_useradd_cmd_output
+#echo "groupadd -g $IDG $SZUKANY && useradd -s $POWLOKA -m -d $WKD/$SZUKANY --uid $IDU --gid $IDG -p \"$HASH\" $SZUKANY && cp -Rv /root/templates/public_html $WKD/$SZUKANY/ && chown -Rv $SZUKANY:$SZUKANY $WKD/$SZUKANY/public_html && cp -v /etc/php/7.3/fpm/pool.d/timglobalwww.conf /etc/php/7.3/fpm/pool.d/$SZUKANY.conf && sed 's/timglobalwww/$SZUKANY/g' /etc/php/7.3/fpm/pool.d/timglobalwww.conf > /etc/php/7.3/fpm/pool.d/$SZUKANY.conf && /etc/init.d/php7.3-fpm reload && systemctl status php7.3-fpm" > create_useradd_cmd_output
+echo "groupadd -g $IDG $SZUKANY && useradd -s $POWLOKA -m -d $WKD/$SZUKANY --uid $IDU --gid $IDG -p \"$HASH\" $SZUKANY && cp -Rv /root/templates/public_html $WKD/$SZUKANY/ && chown -Rv $SZUKANY:$SZUKANY $WKD/$SZUKANY/public_html && sed 's/timglobalwww/$SZUKANY/g' /root/templates/timglobalwww.conf > /etc/php/7.3/fpm/pool.d/$SZUKANY.conf && /etc/init.d/php7.3-fpm reload && systemctl status php7.3-fpm" > create_useradd_cmd_output
+
+echo ""
+
+grep -ri "^$SZUKANY:" /etc/passwd /etc/shadow

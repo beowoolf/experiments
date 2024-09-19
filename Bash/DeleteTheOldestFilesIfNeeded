@@ -1,0 +1,60 @@
+#!/bin/bash
+
+# Define constants
+DIR_TO_CLEAN=/home/backup
+MIN_FREE_SPACE_IN_MB=72000
+MAX_FILES_SIZE_IN_MB=10
+LEAVE_MIN_BACKUPS=1
+
+# Define the location of the applications
+FIND="/usr/bin/find"
+HEAD="/usr/bin/head"
+AWK="/usr/bin/awk"
+DU="/usr/bin/du"
+WC="/usr/bin/wc"
+SORT="/bin/sort"
+SED="/bin/sed"
+DF="/bin/df"
+LS="/bin/ls"
+RM="/bin/rm"
+
+FreeSpace=$($DF -m $DIR_TO_CLEAN | $AWK '{print $4}' | $SED "1d")
+DirectorySize=$($DU -hm $DIR_TO_CLEAN | $AWK '{print $1}')
+BackupsInDir=$($LS -1q $DIR_TO_CLEAN | $WC -l)
+
+echo "Free space in MB"
+echo $FreeSpace
+
+echo "FreeSpace < MIN_FREE_SPACE_IN_MB"
+if [ $FreeSpace -lt $MIN_FREE_SPACE_IN_MB ]; then
+  echo "cleaning required"
+else
+  echo "cleaning NOT required"
+fi
+
+echo "Directory size in MB"
+echo $DirectorySize
+
+echo "DirectorySize > MAX_FILES_SIZE_IN_MB"
+if [ $DirectorySize -gt $MAX_FILES_SIZE_IN_MB ]; then
+  echo "cleaning required"
+else
+  echo "cleaning NOT required"
+fi
+
+echo "(FreeSpace < MIN_FREE_SPACE_IN_MB) OR (DirectorySize > MAX_FILES_SIZE_IN_MB)"
+if [ $FreeSpace -lt $MIN_FREE_SPACE_IN_MB ] || [ $DirectorySize -gt $MAX_FILES_SIZE_IN_MB ]; then
+  echo "cleaning required"
+else
+  echo "cleaning NOT required"
+fi
+
+while [ $DirectorySize -gt $MAX_FILES_SIZE_IN_MB ] || [ $FreeSpace -lt $MIN_FREE_SPACE_IN_MB ] && [ $BackupsInDir -gt $LEAVE_MIN_BACKUPS ]; do
+  echo "cleaning..."
+  FILE_TO_DELETE=$($FIND $DIR_TO_CLEAN -type f -printf '%T+ %p\n' | $SORT | $HEAD -n 1 | $AWK '{$1="";print}' | $SED -e 's/^[[:space:]]*//')
+  RES=$($RM -v "$FILE_TO_DELETE")
+  echo $RES
+  FreeSpace=$($DF -m $DIR_TO_CLEAN | $AWK '{print $4}' | $SED "1d")
+  DirectorySize=$($DU -hm $DIR_TO_CLEAN | $AWK '{print $1}')
+  BackupsInDir=$($LS -1q $DIR_TO_CLEAN | $WC -l)
+done

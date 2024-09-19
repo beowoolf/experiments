@@ -1,0 +1,15 @@
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<title>Data urodzenia</title>
+	</head>
+	<body>
+		<form>
+			<strong>Podaj swoją datę urodzenia</strong>
+			<select id="y" name="y" onchange="setDays()"></select>
+			<select id="m" name="m" onchange="setDays()"></select>
+			<select id="d" name="d" onchange="saveDay()"><option value='0'>DD</option></select>
+		</form>
+		<script src="date.js" type="text/javascript"></script>
+	</body>
+</html>

@@ -1,0 +1,16 @@
+Nasze Realizacje
+Poniżej chcielibyśmy przedstawić kilka przykładowych potrzeb, z którymi zetknęliśmy się w czasie naszego istnienia oraz opowiedzieć o tym, jak na nie odpowiedzieliśmy.
+grafika strony nasze realizacje
+zrzut ekranu gratyfikant BIELbit dla Biznesu
+BIELBIT DLA BIZNESU
+Potrzeba:
+Na przestrzeni lat współpracowaliśmy z wieloma firmami różniącymi się od siebie wielkością, czasem istnienia na rynku, zakresem potrzeb informatycznych. Zaistniała potrzeba przygotowania bardzo elastycznego rozwiązania mogącego zaspokoić przeróżne potrzeby klientów i współpracować z wieloma innymi systemami ERP. Nie chcieliśmy narażać naszych klientów na ponoszenie kosztów przygotowania każdego rozwiązania „od zera” lub wymiany własnego systemu na taki, z którym nasz program współpracuje.
+Rozwiązanie
+Odpowiedzią na powyższą potrzebę okazał się system, który nazwaliśmy po prostu BIELbit dla Biznesu. Jest to aplikacja hostująca całą gamę różnych modułów (od obsługi PKZP i ZFM do elektronicznej wysyłki dokumentów) i dająca możliwość wykupienia przez klienta licencji tylko na te moduły, które chce. Dodatkowo aplikacja udostępnia te moduły jako współpracujące z różnymi systemami ERP (lub działające samodzielnie) z możliwością szybkiego dostosowania do kolejnych systemów w ramach potrzeb klienta.
+zrzut ekranu mobilnyMagazynier na Androida
+MOBILNY MAGAZYNIER NA ANDROIDA
+Potrzeba:
+Nasz klient wyraził potrzebę stworzenia aplikacji mobilnej pozwalającej pracownikom magazynów na przygotowywanie dokumentów magazynowych „na bieżąco” podczas swojej pracy. Miał on współpracować z systemem Navireo używanym już przez firmę.
+Rozwiązanie
+Przygotowanym przez nas rozwiązaniem jest program mobilnyMagazynier pracujący na systemie Android. Daje on możliwość robienia przyjęć i wydać magazynowych (wewnętrznych jak i zewnętrznych), kompletacji, inwentaryzacji oraz prostego parowania towarów z kodami kreskowymi z dowolnego miejsca na magazynie. Dzięki temu, że program jest w stałym kontakcie z systemem Navireo ma on dostęp do aktualnych informacji. Obsługuje również dokumenty zdefiniowane przez użytkownika w systemie Navireo oraz współpracuje z urządzeniami skanującymi PDA przyspieszając pracę magazynu. Oczywiście program ten może być w każdej chwili rozszerzony o nowe funkcjonalności odpowiadające na indywidualne potrzeby naszych klientów.
+Dzięki temu, że program jes

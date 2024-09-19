@@ -1,0 +1,30 @@
+#!/bin/bash
+
+shopt -s nullglob
+
+IsProtected () {
+  HTTP="http://$1"
+  # echo \"$HTTP\"
+  # HEADERS=$(curl -I -s --stderr - $HTTP)
+  HEADERS=$(curl -I -L -s --stderr - $HTTP)
+  # echo "$HEADERS"
+  # LOCATION=$(echo "$HEADERS" | grep -i "Location: ")
+  LOCATION=$(echo "$HEADERS" | grep -i "Location: " | grep -i "http" | tail -n 1)
+  if [ ! "$LOCATION" ]; then
+    STATUS=$(echo "$HEADERS" | grep -i "HTTP/")
+    if [ ! "$STATUS" ]; then
+      # curl -I -s --stderr - $HTTP
+      # echo "$HTTP Domena nie istnieje lub inny błąd"
+      echo "Domena nie istnieje lub inny błąd"
+    else
+      # echo "$HTTP $STATUS"
+      echo "$STATUS"
+    fi
+  else
+    # echo "$HTTP $LOCATION"
+    echo "$LOCATION"
+  fi
+  # echo "-------------------------"
+}
+
+IsProtected $1

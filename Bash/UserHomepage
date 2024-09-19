@@ -1,0 +1,65 @@
+#!/bin/bash
+
+if [ "$(id -u)" != "0" ]; then
+   echo "This script must be run as root" 1>&2
+   exit 1
+fi
+
+PLUS='+'
+MINUS='-'
+
+while getopts "u:d:a:" option; do
+	case $option in
+		u)
+			echo "-u $OPTARG" >&2
+			USR=${OPTARG}
+			;;
+		d)
+			echo "-d $OPTARG" >&2
+			DOM=${OPTARG}
+			;;
+		a)
+			echo "-a $OPTARG" >&2
+			ACTION=${OPTARG}
+			;;
+	esac
+done
+
+if [ -z ${USR} ]; then
+   echo "User argument (-u) not set" 1>&2
+   exit 1
+fi
+
+if [ -z ${DOM} ]; then
+	echo "Domain argument (-d) not set"
+else
+	if [ -z ${ACTION} ]; then
+		echo "Action argument (-a) should be \"+\" or \"-\" char"
+	else
+		if [ ${ACTION} == ${PLUS} ]; then
+			echo "Tworzenie pliku ${USR}.${HOSTNAME}.${DOM}.conf subdomeny ${USR}.${HOSTNAME}.${DOM}"
+			echo "<VirtualHost *:80>
+	ServerAdmin $USR@$HOSTNAME.$DOM
+	ServerName $USR.$HOSTNAME.$DOM
+	ServerAlias www.$USR.$HOSTNAME.$DOM
+	DocumentRoot /home/$USR/Web
+	ErrorLog \${APACHE_LOG_DIR}/error.log
+	CustomLog \${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>" > /etc/apache2/sites-available/$USR.$HOSTNAME.$DOM.conf
+
+			echo "Aktywacja subdomeny ${USR}.${HOSTNAME}.${DOM} z pliku ${USR}.${HOSTNAME}.${DOM}.conf"
+			a2ensite $USR.$HOSTNAME.$DOM.conf
+		else
+			echo "Dezaktywacja subdomeny ${USR}.${HOSTNAME}.${DOM} z pliku ${USR}.${HOSTNAME}.${DOM}.conf"
+			a2dissite $USR.$HOSTNAME.$DOM.conf
+		fi
+		
+		echo "Przeładowanie konfiguracji serwera WWW, aby aktywować subdomenę ${USR}.${HOSTNAME}.${DOM} z pliku ${USR}.${HOSTNAME}.${DOM}.conf"
+		service apache2 reload
+		
+		if [ ${ACTION} == ${MINUS} ]; then
+			echo "Usuwanie pliku ${USR}.${HOSTNAME}.${DOM}.conf subdomeny ${USR}.${HOSTNAME}.${DOM}"
+			rm -v /etc/apache2/sites-available/$USR.$HOSTNAME.$DOM.conf
+		fi
+	fi
+fi

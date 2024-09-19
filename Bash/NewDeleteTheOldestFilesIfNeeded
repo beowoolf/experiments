@@ -1,0 +1,41 @@
+#!/bin/bash
+
+# Define constants
+DIR_TO_CLEAN=/home/pwilczek/x
+MIN_FREE_SPACE_IN_MB=90000
+
+# Define the location of the applications
+FIND="/usr/bin/find"
+HEAD="/usr/bin/head"
+AWK="/usr/bin/awk"
+SORT="/bin/sort"
+SED="/bin/sed"
+DF="/bin/df"
+RM="/bin/rm"
+
+FreeSpace=$($DF -m $DIR_TO_CLEAN | $AWK '{print $4}' | $SED "1d")
+
+echo "Free space in MB"
+echo $FreeSpace
+
+echo "FreeSpace < MIN_FREE_SPACE_IN_MB"
+if [ $FreeSpace -lt $MIN_FREE_SPACE_IN_MB ]; then
+  echo "cleaning required"
+else
+  echo "cleaning NOT required"
+fi
+
+# Set shell such that empty file listing will return null
+# shopt -s nullglob
+
+while [ $FreeSpace -lt $MIN_FREE_SPACE_IN_MB ]; do
+  FILE_TO_DELETE=$($FIND $DIR_TO_CLEAN -type f -printf '%T+ %p\n' | $SORT | $HEAD -n 1 | $AWK '{$1="";print}' | $SED -e 's/^[[:space:]]*//')
+  # Check if any backups remain in the directory, otherwise break out of the delete loop
+  if [ ! $FILE_TO_DELETE ]; then
+    break
+  fi
+  echo "cleaning..."
+  RES=$($RM -v "$FILE_TO_DELETE")
+  echo $RES
+  FreeSpace=$($DF -m $DIR_TO_CLEAN | $AWK '{print $4}' | $SED "1d")
+done
