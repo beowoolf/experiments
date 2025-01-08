@@ -1,0 +1,3 @@
+#!/bin/bash
+
+apt update  && apt upgrade -y && apt install -y curl && curl -sSL https://dotnet.microsoft.com/download/dotnet/scripts/v1/dotnet-install.sh | bash && apt install -y libicu57 && /root/.dotnet/dotnet --version && /root/.dotnet/dotnet --list-sdks
